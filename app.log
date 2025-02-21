@@ -1,0 +1,2 @@
+{"level":"\u001b[32minfo\u001b[39m","message":"SERVER listen on 3000 port","timestamp":"2025-02-21T09:36:58.207Z"}
+{"level":"\u001b[32minfo\u001b[39m","message":"{\"method\":\"POST\",\"url\":\"/users/login\",\"status\":\"200\",\"responseTime\":\"225.456\"}","timestamp":"2025-02-21T09:37:12.958Z"}
