@@ -19,5 +19,12 @@
   "scripts": {
     "start": "nodemon index.js"
   },
-  "type": "module"
+  "type": "module",
+  "name": "magic_proyect",
+  "version": "1.0.0",
+  "description": "Magic the gathering deck-creator back end",
+  "main": "index.js",
+  "devDependencies": {},
+  "author": "BenjaminBaigorria",
+  "license": "ISC"
 }
