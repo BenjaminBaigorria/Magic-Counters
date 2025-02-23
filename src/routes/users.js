@@ -28,6 +28,7 @@ server.post("/signup", async (req, res) => {
       )
       const source = fs.readFileSync("src/functions/Email/html_template_emailConfirmation.html", "utf-8").toString();
       const template = handlebars.compile(source);
+      console.log(process.env.HOST_APP)
       const replacements = {
         username: username,
         redirectTo: process.env.HOST_APP + `/Users/email/confirm/${username}` /// <<<<<---cambiar en deploytment
