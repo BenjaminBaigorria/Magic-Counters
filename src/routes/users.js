@@ -26,7 +26,7 @@ server.post("/signup", async (req, res) => {
       await pool.request().query(
         `insert into usuario (username,password,mail) values('${username}','${hash}','${mail}')`
       )
-      const source = fs.readFileSync("functions/Email/html_template_emailConfirmation.html", "utf-8").toString();
+      const source = fs.readFileSync("src/functions/Email/html_template_emailConfirmation.html", "utf-8").toString();
       const template = handlebars.compile(source);
       const replacements = {
         username: username,
@@ -109,7 +109,7 @@ server.get("/email/confirm/:username", async (req, res) => {
       const replacements = {
         username: username, //<<<<--------------------<<<<< change
       }
-      const source = await fs.readFileSync("functions/Email/EmailConfirmed.html").toString();
+      const source = await fs.readFileSync("src/functions/Email/EmailConfirmed.html").toString();
       await pool.request().query(`UPDATE usuario SET mailConfirmed = 1 WHERE username = '${username}'`)
       const template = handlebars.compile(source);
       res.status(200).send(template(replacements))
