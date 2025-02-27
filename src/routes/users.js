@@ -6,6 +6,8 @@ import bcrypt from "bcrypt"
 import { sendEmail } from "../functions/Email/index.js";
 import handlebars from "handlebars";
 import fs from "fs"
+import jwt from "jsonwebtoken"
+import cookieParser from "cookie-parser";
 
 const server = express();
 
@@ -68,15 +70,32 @@ server.post("/login", async (req, res) => {
       })
       return
     }
-    res.send({
+    const TOKEN=jwt.sign({id:user.recordset[0].user_id, username:username},process.env.SECRET_KEY,{
+      expiresIn: "1h"
+    })
+    res.cookie("access_token",TOKEN,{
+      httpOnly:  true,
+      sameSite: "strict",
+      maxAge: 1000*60*60 //1 hora
+    }).send({
       isValid: true,
-      userPassSQL: user.recordset
-      //jwt
-      //cookie
+      token:TOKEN
     })
   } catch (error) {
     logger.info("Error:", error)
   }
+})
+
+server.use((req,res,next)=>{ //protected routes below
+  const token=req.cookies.access_token
+  req.session={user:null}
+  try {
+    const data = jwt.verify(token,process.env.SECRET_KEY)
+    req.session.user=data
+  } catch (error) {
+    req.session.user=null
+  }
+  next()
 })
 
 server.get("/email/:username", async (req, res) => {
@@ -98,6 +117,7 @@ server.get("/email/:username", async (req, res) => {
 })
 
 server.get("/email/confirm/:username", async (req, res) => {
+  req.session
   try {
     const { username } = req.params
     const pool = await GetConnection();
@@ -120,5 +140,17 @@ server.get("/email/confirm/:username", async (req, res) => {
   }
 
 })
-
+/* tested
+server.get("/protected",(req,res)=>{
+  console.log(token)
+  if(!token){
+    return res.status(403).send("Access denied")
+  }
+  try {
+    const data = jwt.verify(token,process.env.SECRET_KEY)
+  } catch (error) {
+    
+  }
+})
+*/
 export default server;
